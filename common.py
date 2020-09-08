@@ -75,6 +75,12 @@ def parse_tabs(client):
         tabs[i] = Tab(*tabs[i])
     return tabs
 
+def is_empty_tab(tab):
+    return tab.url == "about:newtab" or tab.url == "about:home" or tab.url == "about:blank"
+
+def filter_tabs_by_window(tabs, window):
+    return [tab for tab in tabs if tab.window == window]
+
 if __name__ == "__main__":
     client = get_client()
     tabs = parse_tabs(client)
