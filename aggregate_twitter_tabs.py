@@ -1,7 +1,5 @@
 import operator
 
-from brotab import api as brapi
-
 import common
 
 cl = common.get_client()
