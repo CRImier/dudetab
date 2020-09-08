@@ -1,0 +1,8 @@
+twitter.com
+facebook.com
+youtube.com
+instagram.com
+discord.com
+mail.google.com
+.slack.com
+
