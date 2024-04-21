@@ -127,15 +127,17 @@ youtube_tabs = [tab for tab in tabs if "youtube.com" in tab.url]
 
 # merge all large non-music windows together with the largest window
 
+print(large_windows, largest_window, music_window)
+
 for window in large_windows:
+    print("Processing {}".format(window))
     if window == largest_window:
-        break
-    # this is currently impossible with the windows I have open
-    #print("Processing a large window - this cannot be!")
-    #import pdb; pdb.set_trace()
+        continue
+    print("Processing {}".format(window))
     old_tabs = common.serialize_tabs(tabs)
     window_tabs = common.filter_tabs_by_window(tabs, window)
-    for tab in window_tabs:
+    youtube_tabs = [tab for tab in window_tabs if "youtube.com" in tab.url]
+    for tab in youtube_tabs:
         print("Moving tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
         tab.window = largest_window
     new_tabs = common.serialize_tabs(tabs)
