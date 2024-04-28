@@ -51,7 +51,7 @@ for i, tab in enumerate(youtube_tabs):
     ydl_opts = {}
     print("Downloading tab info {}/{}".format(i+1, len(youtube_tabs)))
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(tab.url, download=False)
+        info = ydl.extract_info(tab.url, download=False, process=False)
         sinfo = ydl.sanitize_info(info)
         tab.sinfo = sinfo
 
@@ -68,7 +68,7 @@ for i, tab in enumerate(youtube_tabs):
     if name.endswith(end):
         name = name[:-len(end)]
     n = "{}/{}".format(i+1, len(youtube_tabs))
-    s = "{} - '{}', from {}".format(tab.url, name, tab.sinfo["uploader"])
+    s = "{} - '{}', from {}".format(tab.url, name, tab.sinfo.get("uploader", "[UNKNOWN]"))
     print(n, s)
     result = ask_tab_action(tab)
     if result == "close":
