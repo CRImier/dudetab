@@ -50,10 +50,18 @@ tabs_to_close = []
 for i, tab in enumerate(youtube_tabs):
     ydl_opts = {}
     print("Downloading tab info {}/{}".format(i+1, len(youtube_tabs)))
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(tab.url, download=False, process=False)
-        sinfo = ydl.sanitize_info(info)
-        tab.sinfo = sinfo
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(tab.url, download=False, process=False)
+            sinfo = ydl.sanitize_info(info)
+            tab.sinfo = sinfo
+            duration = tab.sinfo.get("duration", 0)
+            duration_m = duration // 60
+            duration_s = duration % 60
+            print(duration_m, duration_s)
+    except yt_dlp.utils.DownloadError as e:
+        print(e)
+        tab.sinfo = {}
 
 # DURATION
 
@@ -67,8 +75,11 @@ for i, tab in enumerate(youtube_tabs):
     end = ' - YouTube'
     if name.endswith(end):
         name = name[:-len(end)]
+    duration = tab.sinfo.get("duration", 0)
+    duration_m = duration // 60
+    duration_s = duration % 60
     n = "{}/{}".format(i+1, len(youtube_tabs))
-    s = "{} - '{}', from {}".format(tab.url, name, tab.sinfo.get("uploader", "[UNKNOWN]"))
+    s = "{} - '{}' ({}:{}), from {}".format(tab.url, name, duration_m, duration_s, tab.sinfo.get("uploader", "[UNKNOWN]"))
     print(n, s)
     result = ask_tab_action(tab)
     if result == "close":
@@ -82,6 +93,9 @@ for i, tab in enumerate(youtube_tabs):
     elif result == "quit":
         break
 
-for tab in tabs_to_close:
-    print("Closing tab {}".format(tab.get_full_id()))
-    cl.close_tabs([tab.get_full_id()])
+try:
+    for tab in tabs_to_close:
+        print("Closing tab {}".format(tab.get_full_id()))
+        cl.close_tabs([tab.get_full_id()])
+except:
+    print(tabs_to_close)
