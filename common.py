@@ -13,8 +13,9 @@ def get_client(requested_browser = None):
     if not browser_matches:
         raise Exception("No clients found!")
     if len(browser_matches) > 1:
-        raise Exception("Too many clients found, don't know what to do!")
-    return browser_matches[0]
+        # use the last client
+        print("Too many clients found, don't know what to do! Picking the last one", browser_matches)
+    return browser_matches[-1]
 
 
 class Tab():
@@ -30,6 +31,9 @@ class Tab():
 
     def to_string(self):
         return "\t".join([self.get_full_id(), self.name, self.url])
+
+    def __str__(self):
+        return f"<common.Tab {self.prefix}.{self.window}.{self.id} at {hex(id(self))}, URL: {self.url}>"
 
 
 def serialize_tabs(tabs):
