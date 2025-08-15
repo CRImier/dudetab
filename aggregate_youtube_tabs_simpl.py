@@ -74,4 +74,4 @@ if other_windows:
     print("Other windows: {}".format(other_windows))
 else:
     print("Sorting finished, no small windows found!")
-    import sys;sys.exit(0)
+    #import sys;sys.exit(0)
