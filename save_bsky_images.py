@@ -1,18 +1,15 @@
 import traceback
-import operator
 import requests
-import common
 import shutil
 import os
+
+import common
 
 target_dir = 'DIROFYOURCHOICE'
 
 
 cl = common.get_client()
 tabs = common.parse_tabs(cl)
-
-#https://cdn.bsky.app/
-#https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:uynpich2hsqmryyhr3moz5re/bafkreicg7v7vslvdqsaaogvft77k6ntszobudvnb5z5pybi2263z257d7i@jpeg
 
 bsky_tabs = [tab for tab in tabs if "https://cdn.bsky.app" in tab.url]
 
@@ -35,7 +32,6 @@ for tab in bsky_tabs:
         if rqq.status_code != 200:
             print("Can't download from URL {}: code {}!".format(tab.url, rqq.status_code))
             continue
-        #breakpoint()
         rqq.raw.decode_content = True
         with open(path, 'wb') as f:
             shutil.copyfileobj(rqq.raw, f)
