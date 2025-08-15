@@ -5,16 +5,11 @@ import common
 cl = common.get_client()
 tabs = common.parse_tabs(cl)
 
-bsky_tabs = [tab for tab in tabs if "https://bsky.app" in tab.url]
+bsky_marker = "https://bsky.app"
 
-# closing Bluesky Home tabs
+bsky_tabs = [tab for tab in tabs if bsky_marker in tab.url]
 
-for tab in bsky_tabs:
-    if tab.url == "https://bsky.app/home":
-        print("Closing home tab:", tab.get_full_id())
-        cl.close_tabs([tab.get_full_id()])
-
-# determining a window where the majority of Bluesky tabs are
+# all tabs containing bluesky windows right now
 
 bluesky_windows = {}
 for tab in bsky_tabs:
@@ -22,6 +17,56 @@ for tab in bsky_tabs:
         bluesky_windows[tab.window] = 1
     else:
         bluesky_windows[tab.window] += 1
+
+min_window = str(min([map(int, bluesky_windows.keys())]))
+
+# first tab is me-specific thing
+
+first_tab_ignored = False
+first_tab = None
+
+# tagging the first tab that's pinned in my first browser window
+for tab in bsky_tabs:
+    if tab.window == min_window:
+        if not first_tab_ignored:
+            first_tab = tab
+            #first_tab_ignored = True
+            continue
+
+# closing Bluesky Home tabs
+
+for tab in bsky_tabs:
+    if tab.url == bsky_marker+"/home" \
+      and tab != first_tab:
+        print("Closing home tab:", tab.get_full_id())
+        cl.close_tabs([tab.get_full_id()])
+
+for tab in bsky_tabs:
+    if tab.url == "https://bsky.app/notifications" \
+      and tab != first_tab:
+        print("Closing notif tab:", tab.get_full_id())
+        cl.close_tabs([tab.get_full_id()])
+
+for tab in bsky_tabs:
+    if tab.url == "https://bsky.app/" \
+      and tab != first_tab:
+        print("Closing feed tab:", tab.get_full_id())
+        cl.close_tabs([tab.get_full_id()])
+
+# closed a bunch of tabs - regenerating the data
+
+tabs = common.parse_tabs(cl)
+
+bsky_tabs = [tab for tab in tabs if "https://bsky.app" in tab.url]
+
+bluesky_windows = {}
+for tab in bsky_tabs:
+    if tab.window not in bluesky_windows:
+        bluesky_windows[tab.window] = 1
+    else:
+        bluesky_windows[tab.window] += 1
+
+# determining a window where the majority of Bluesky tabs are
 
 largest_window = max(bluesky_windows.items(), key=operator.itemgetter(1))[0]
 
@@ -32,12 +77,8 @@ old_tabs = common.serialize_tabs(tabs)
 
 #print(bsky_tabs)
 
-# first tab is me-specific thing
-
-first_tab_ignored = False
-
 for tab in bsky_tabs:
-    if tab.window == '1':
+    if tab.window == min_window:
         if not first_tab_ignored:
             first_tab_ignored = True
             continue
@@ -66,3 +107,4 @@ for tab in unrelated_tabs:
         #cl.close_tabs([tab.get_full_id()])
 """
 
+import close_empty_windows
