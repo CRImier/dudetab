@@ -11,6 +11,7 @@ Sorted by increasing complexity:
 * ```aggregate_youtube_tabs_simpl.py``` - closes all YouTube main page tabs. Then, puts all the YouTube tabs into the window that contains the most YouTube tabs pre-sorting.
 * ```export_youtube_tabs.py``` - closes all YouTube main page tabs. Then, fetches metadata for all open YouTube video tabs using `yt-dlp`. Then, lets you sort through the tabs to either close them, ignore them, or append the video URL&name&channel to a text file of your choice. Also lets you quit the script mid-sorting in case you get tired midway.
 * ```save_bsky_images.py``` - downloads all open `cdn.bsky.app` tabs into a folder of your choosing, then closes the tabs with successfully downloaded content.
+* ```save_discord_images``` - downloads all open `cdn.discordapp.com` tabs into a folder of your choosing, then closes the tabs with successfully downloaded content. Run it like every 12 hours, since in their infinite wisdom, Discord puts a 24h expiration on those URLs.
 
 Other files:
 * ```heavy_tab_hosts.txt``` - list of "heavy" hosts for the ```move_to_new_tabs.py``` script
