@@ -13,6 +13,7 @@ Sorted by increasing complexity:
 * ```sandbox.py``` - is a sandbox for you to play with brotab. Run it as `python -i sandbox.py` and get an interactive shell with important variables populated (run `dir()` for introspection).
 * ```save_bsky_images.py``` - downloads all open `cdn.bsky.app` tabs into a folder of your choosing, then closes the tabs with successfully downloaded content.
 * ```save_discord_images``` - downloads all open `cdn.discordapp.com` tabs into a folder of your choosing, then closes the tabs with successfully downloaded content. Run it like every 12 hours, since in their infinite wisdom, Discord puts a 24h expiration on those URLs.
+* ```aggregate_tabs.py``` - a mega-script that runs a lot of the scripts above, and then sorts all open tabs into 4 windows (main, youtube, bluesky, and catch-all for everything else). Afterwards, it deduplicates about:newtab windows. Will do more deduplication later on. Should also integrate `move_to_new_tabs.py` at some point.
 
 Other files:
 * ```heavy_tab_hosts.txt``` - list of "heavy" hosts for the ```move_to_new_tabs.py``` script
