@@ -9,18 +9,20 @@ import common
 # they will deceive you
 ##################################################
 
+yt_marker = "youtube.com/"
+
 cl = common.get_client()
 tabs = common.parse_tabs(cl)
 
 # closing YouTube Home tabs
 
-youtube_home_tabs = [tab for tab in tabs if tab.url.endswith("youtube.com/")]
+youtube_home_tabs = [tab for tab in tabs if tab.url.endswith(yt_marker)]
 
 for tab in youtube_home_tabs:
     print("Closing YouTube home tab in window {}".format(tab.window))
     cl.close_tabs([tab.get_full_id()])
 
-youtube_tabs = [tab for tab in tabs if "youtube.com" in tab.url]
+youtube_tabs = [tab for tab in tabs if yt_marker in tab.url]
 
 # determining a window where the majority of YouTube tabs are
 
@@ -46,7 +48,7 @@ largest_window = max(large_windows.items(), key=operator.itemgetter(1))[0]
 
 # regenerate all the variables we'll be using
 tabs = common.parse_tabs(cl)
-youtube_tabs = [tab for tab in tabs if "youtube.com" in tab.url]
+youtube_tabs = [tab for tab in tabs if yt_marker in tab.url]
 
 # merge all large non-music windows together with the largest window
 
@@ -59,7 +61,7 @@ for window in large_windows:
     print("Processing {}".format(window))
     old_tabs = common.serialize_tabs(tabs)
     window_tabs = common.filter_tabs_by_window(tabs, window)
-    youtube_tabs = [tab for tab in window_tabs if "youtube.com" in tab.url]
+    youtube_tabs = [tab for tab in window_tabs if yt_marker in tab.url]
     for tab in youtube_tabs:
         print("Moving tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
         tab.window = largest_window

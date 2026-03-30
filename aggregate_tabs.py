@@ -32,9 +32,9 @@ bs_win = None
 
 for winnum, tabs in windows.items():
     has_yandex = any(["yandex.com" in tab.url for tab in tabs]) # my personal heuristic for my main tab
-    has_performance = any(["about:performance" in tab.url for tab in tabs])
-    has_youtube = any(["youtube.com" in tab.url for tab in tabs])
-    has_bsky = any(["bsky.app" in tab.url for tab in tabs])
+    has_performance = any(["about:processes" in tab.url for tab in tabs]) or any(["about:performance" in tab.url for tab in tabs])
+    has_youtube = any([aggregate_youtube_tabs_simpl.yt_marker in tab.url for tab in tabs])
+    has_bsky = any([aggregate_bsky_tabs.bsky_marker in tab.url for tab in tabs])
     if has_yandex and has_performance:
         print("Main window found", winnum)
         if main_win != None:
