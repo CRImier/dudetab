@@ -73,6 +73,10 @@ tab_counts_sorted = list(reversed(sorted(tab_counts, key=lambda x: x[1])))
 ca_win = tab_counts_sorted[0][0] # catchall window for whatever-else-is-going-on
 print("Catchall window decided: {} ({} tabs)".format(ca_win, len(windows[ca_win])))
 
+import close_junk_tabs
+
+close_junk_tabs.small_window_interactive_cleanup(used_windows+[ca_win])
+
 # now starting to move stuff into catchall window
 old_tabs = serialize_tabs(tabs)
 bsky_tabs = filter_tabs_by_window(tabs, bs_win)
