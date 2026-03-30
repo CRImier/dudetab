@@ -40,7 +40,7 @@ for tab in discord_tabs:
         print("Can't download from URL {}!".format(tab.url))
         traceback.print_exc()
         print(tab.id)
-        cl.close_tabs([tab.get_full_id()])
+        #cl.close_tabs([tab.get_full_id()])
     else:
         cl.close_tabs([tab.get_full_id()])
 
