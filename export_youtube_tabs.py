@@ -5,10 +5,10 @@ import json
 import re
 
 from common import *
+import vars
 
 import yt_dlp
 
-out_file = "INSERT FILENAME HERE"
 tab_amount = None
 
 import sys
@@ -18,6 +18,8 @@ if len(sys.argv) > 1:
         tab_amount = int(sys.argv[1])
     except:
         traceback.print_exc()
+
+out_file = vars.export_youtube_out_file
 
 cl = get_client()
 tabs = parse_tabs(cl)

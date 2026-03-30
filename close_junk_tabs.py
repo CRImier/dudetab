@@ -1,4 +1,5 @@
 from common import *
+import vars
 import sys
 
 cl = get_client()
@@ -32,9 +33,7 @@ for tab in current_tabs:
     cl.close_tabs([tab.get_full_id()])
 
 
-common_domains = [
-  "lcsc.com/",
-]
+common_domains = vars.close_junk_common_domains
 
 current_tabs = [tab for tab in tabs if any([tab.url.endswith(url) for url in common_domains])]
 if not current_tabs:
@@ -44,9 +43,7 @@ for tab in current_tabs:
     print("Closing {} in window {}".format(tab.url, tab.window))
     cl.close_tabs([tab.get_full_id()])
 
-ask_before_domains = [
-  "https://bsky.app/search?",
-]
+ask_before_domains = vars.close_junk_ask_before_domains
 
 
 current_tabs = [tab for tab in tabs if any([tab.url.startswith(domain) for domain in ask_before_domains])]

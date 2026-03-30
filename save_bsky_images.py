@@ -4,8 +4,9 @@ import shutil
 import os
 
 from common import *
+import vars
 
-target_dir = 'DIROFYOURCHOICE'
+target_dir = vars.save_bsky_target_dir
 
 
 cl = get_client()

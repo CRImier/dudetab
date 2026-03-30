@@ -4,8 +4,9 @@ import shutil
 import os
 
 from common import *
+import vars
 
-target_dir = 'DIROFYOURCHOICE'
+target_dir = vars.save_discord_target_dir
 
 from zpui_lib.helpers import get_safe_file_backup_path
 
