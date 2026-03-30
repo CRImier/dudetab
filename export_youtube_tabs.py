@@ -4,14 +4,23 @@ import random
 import json
 import re
 
-import common
+from common import *
 
 import yt_dlp
 
 out_file = "INSERT FILENAME HERE"
+tab_amount = None
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+import sys
+if len(sys.argv) > 1:
+    # first arg: number of tabs to handle this time
+    try:
+        tab_amount = int(sys.argv[1])
+    except:
+        traceback.print_exc()
+
+cl = get_client()
+tabs = parse_tabs(cl)
 
 FunniException = type("FunniException", (Exception,), {})
 
@@ -34,6 +43,9 @@ for tab in youtube_home_tabs:
     cl.close_tabs([tab.get_full_id()])
 
 youtube_tabs = [tab for tab in tabs if "youtube.com/watch" in get_url(tab.url)]
+
+if tab_amount:
+    youtube_tabs = youtube_tabs[:tab_amount]
 
 tabs_to_close = []
 
@@ -95,8 +107,8 @@ for i, tab in enumerate(youtube_tabs):
     except:
         traceback.print_exc()
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 tab_ids = [tab.get_full_id() for tab in tabs]
 
 try:
