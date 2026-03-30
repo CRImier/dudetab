@@ -1,8 +1,8 @@
-import common
+from common import *
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
-windows = common.get_window_ids(tabs)
+cl = get_client()
+tabs = parse_tabs(cl)
+windows = get_window_ids(tabs)
 
 active_tabs = cl.get_active_tabs(None)
 
@@ -21,11 +21,11 @@ def is_heavy_tab(tab):
 for tab in tabs:
     if tab.get_full_id() in active_tabs:
         print("{}: {} ({})".format(tab.window, tab.name, tab.url))
-        if not common.is_empty_tab(tab) and is_heavy_tab(tab):
+        if not is_empty_tab(tab) and is_heavy_tab(tab):
             # tab that's currently open is not empty and is a heavy one to hold in-memory
             # so, we need to either switch to an empty tab in the same window or open a new empty tab in the same window
             window = tab.window
-            tabs_by_window = common.filter_tabs_by_window(tabs, window)
+            tabs_by_window = filter_tabs_by_window(tabs, window)
             # going through the window's tabs in reverse - so we switch to last open empty tab
             for tabw in list(reversed(tabs_by_window)):
                 if is_empty_tab(tabw):

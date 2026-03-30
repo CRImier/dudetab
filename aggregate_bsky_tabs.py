@@ -1,9 +1,9 @@
 import operator
 
-import common
+from common import *
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 bsky_marker = "https://bsky.app"
 
@@ -55,7 +55,7 @@ for tab in bsky_tabs:
 
 # closed a bunch of tabs - regenerating the data
 
-tabs = common.parse_tabs(cl)
+tabs = parse_tabs(cl)
 
 bsky_tabs = [tab for tab in tabs if "https://bsky.app" in tab.url]
 
@@ -73,7 +73,7 @@ largest_window = max(bluesky_windows.items(), key=operator.itemgetter(1))[0]
 # moving all the tabs into that window
 # the process is involved since you need to recalculate tab indices - I'd rather rely on the brotab code for that
 
-old_tabs = common.serialize_tabs(tabs)
+old_tabs = serialize_tabs(tabs)
 
 #print(bsky_tabs)
 
@@ -86,11 +86,11 @@ for tab in bsky_tabs:
         print("Moving tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
         tab.window = largest_window
 
-new_tabs = common.serialize_tabs(tabs)
+new_tabs = serialize_tabs(tabs)
 # this code recalculates the tab indices and also calls the move command
-common.update_tabs(cl, old_tabs, new_tabs)
+update_tabs(cl, old_tabs, new_tabs)
 
-tabs = common.parse_tabs(cl)
+tabs = parse_tabs(cl)
 
 # cleaning the bluesky window from anything that's not bluesky
 

@@ -3,13 +3,13 @@ import requests
 import shutil
 import os
 
-import common
+from common import *
 
 target_dir = 'DIROFYOURCHOICE'
 
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 bsky_tabs = [tab for tab in tabs if "https://cdn.bsky.app" in tab.url]
 

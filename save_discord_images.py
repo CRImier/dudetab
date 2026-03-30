@@ -3,14 +3,14 @@ import requests
 import shutil
 import os
 
-import common
+from common import *
 
 target_dir = 'DIROFYOURCHOICE'
 
 from zpui_lib.helpers import get_safe_file_backup_path
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 discord_tabs = [tab for tab in tabs if "https://cdn.discordapp.com/attachments/" in tab.url or "https://media.discordapp.net/attachments/" in tab.url]
 

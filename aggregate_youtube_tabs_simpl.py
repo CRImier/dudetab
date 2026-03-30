@@ -1,7 +1,7 @@
 import operator
 import random
 
-import common
+from common import *
 
 ##################################################
 # Variable names are very outdated here istg like
@@ -11,8 +11,8 @@ import common
 
 yt_marker = "youtube.com/"
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 # closing YouTube Home tabs
 
@@ -47,7 +47,7 @@ for window, count in youtube_windows.items():
 largest_window = max(large_windows.items(), key=operator.itemgetter(1))[0]
 
 # regenerate all the variables we'll be using
-tabs = common.parse_tabs(cl)
+tabs = parse_tabs(cl)
 youtube_tabs = [tab for tab in tabs if yt_marker in tab.url]
 
 # merge all large non-music windows together with the largest window
@@ -59,16 +59,16 @@ for window in large_windows:
     if window == largest_window:
         continue
     print("Processing {}".format(window))
-    old_tabs = common.serialize_tabs(tabs)
-    window_tabs = common.filter_tabs_by_window(tabs, window)
+    old_tabs = serialize_tabs(tabs)
+    window_tabs = filter_tabs_by_window(tabs, window)
     youtube_tabs = [tab for tab in window_tabs if yt_marker in tab.url]
     for tab in youtube_tabs:
         print("Moving tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
         tab.window = largest_window
-    new_tabs = common.serialize_tabs(tabs)
+    new_tabs = serialize_tabs(tabs)
     # this code recalculates the tab indices and also calls the move command
-    common.update_tabs(cl, old_tabs, new_tabs)
-    tabs = common.parse_tabs(cl)
+    update_tabs(cl, old_tabs, new_tabs)
+    tabs = parse_tabs(cl)
 
 other_windows = [window for window in youtube_windows.keys() if window not in large_windows]
 

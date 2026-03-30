@@ -1,15 +1,15 @@
 import operator
 import random
 
-import common
+from common import *
 
 import aggregate_youtube_tabs_simpl
 import aggregate_bsky_tabs
 import save_bsky_images
 import save_discord_images
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 newtab = "about:newtab"
 
@@ -67,53 +67,54 @@ for winnum, tabs in windows.items():
     if winnum not in used_windows:
         tab_counts.append([winnum, len(tabs)])
 
-tabs = common.parse_tabs(cl)
+tabs = parse_tabs(cl)
 
 tab_counts_sorted = list(reversed(sorted(tab_counts, key=lambda x: x[1])))
 ca_win = tab_counts_sorted[0][0] # catchall window for whatever-else-is-going-on
 print("Catchall window decided: {} ({} tabs)".format(ca_win, len(windows[ca_win])))
 
 # now starting to move stuff into catchall window
-old_tabs = common.serialize_tabs(tabs)
-bsky_tabs = common.filter_tabs_by_window(tabs, bs_win)
-#print(len(tabs), common.get_window_ids(tabs))
+old_tabs = serialize_tabs(tabs)
+bsky_tabs = filter_tabs_by_window(tabs, bs_win)
+#print(len(tabs), get_window_ids(tabs))
 for tab in bsky_tabs:
     # bsky window tab is impostor
-    if aggregate_bsky_tabs.bsky_marker not in tab.url and newtab not in tab.url:
+    if aggregate_bsky_tabs.bsky_marker not in tab.url and not is_empty_tab(tab):
         print("Moving non-Bsky tab {} {} from Bsky window {} to CA window {}".format(tab.get_full_id(), tab.url, tab.window, ca_win))
         tab.window = ca_win
-new_tabs = common.serialize_tabs(tabs)
+new_tabs = serialize_tabs(tabs)
 # this code recalculates the tab indices and also calls the move command
-common.update_tabs(cl, old_tabs, new_tabs)
-tabs = common.parse_tabs(cl)
+update_tabs(cl, old_tabs, new_tabs)
+tabs = parse_tabs(cl)
 
-old_tabs = common.serialize_tabs(tabs)
-yt_tabs = common.filter_tabs_by_window(tabs, yt_win)
-#print(len(tabs), common.get_window_ids(tabs))
+old_tabs = serialize_tabs(tabs)
+yt_tabs = filter_tabs_by_window(tabs, yt_win)
+#print(len(tabs), get_window_ids(tabs))
 for tab in yt_tabs:
     # bsky window tab is impostor
     if "youtube.com/" not in tab.url and newtab not in tab.url:
         print("Moving non-YT tab {} {} from YT window {} to CA window {}".format(tab.get_full_id(), tab.url, tab.window, ca_win))
         tab.window = ca_win
-new_tabs = common.serialize_tabs(tabs)
+new_tabs = serialize_tabs(tabs)
 # this code recalculates the tab indices and also calls the move command
-common.update_tabs(cl, old_tabs, new_tabs)
-tabs = common.parse_tabs(cl)
+update_tabs(cl, old_tabs, new_tabs)
+tabs = parse_tabs(cl)
 
 
 # yeeting all unrelated tabs from main window
-cutoff = [i for i, tab in enumerate(common.filter_tabs_by_window(tabs, main_win)) if tab.url == newtab][0]
-other_tabs = common.filter_tabs_by_window(tabs, main_win)[(cutoff+1):]
+#print(list(enumerate(filter_tabs_by_window(tabs, main_win))))
+cutoff = [i for i, tab in enumerate(filter_tabs_by_window(tabs, main_win)) if tab.url == newtab][0]
+other_tabs = filter_tabs_by_window(tabs, main_win)[(cutoff+1):]
 #print(len(other_tabs))
 
-old_tabs = common.serialize_tabs(tabs)
+old_tabs = serialize_tabs(tabs)
 for tab in other_tabs:
     print("Moving non-main tab {} {} from main window {} to CA window {}".format(tab.get_full_id(), tab.url, tab.window, ca_win))
     tab.window = ca_win
-new_tabs = common.serialize_tabs(tabs)
+new_tabs = serialize_tabs(tabs)
 # this code recalculates the tab indices and also calls the move command
-common.update_tabs(cl, old_tabs, new_tabs)
-tabs = common.parse_tabs(cl)
+update_tabs(cl, old_tabs, new_tabs)
+tabs = parse_tabs(cl)
 
 used_windows = [main_win, yt_win, bs_win, ca_win]
 
@@ -121,20 +122,20 @@ used_windows = [main_win, yt_win, bs_win, ca_win]
 windows = get_windows()
 for window in windows:
     if window not in used_windows:
-        old_tabs = common.serialize_tabs(tabs)
-        moveable_tabs = common.filter_tabs_by_window(tabs, window)
+        old_tabs = serialize_tabs(tabs)
+        moveable_tabs = filter_tabs_by_window(tabs, window)
         for tab in moveable_tabs:
             print("Moving non-main tab {} {} from small window {} to CA window {}".format(tab.get_full_id(), tab.url, tab.window, ca_win))
             tab.window = ca_win
-        new_tabs = common.serialize_tabs(tabs)
+        new_tabs = serialize_tabs(tabs)
         # this code recalculates the tab indices and also calls the move command
-        common.update_tabs(cl, old_tabs, new_tabs)
-        tabs = common.parse_tabs(cl)
+        update_tabs(cl, old_tabs, new_tabs)
+        tabs = parse_tabs(cl)
 
 # now, closing empty windows
 windows = [yt_win, bs_win, ca_win]
 for win_num in windows:
-    newtabs = [tab for tab in common.filter_tabs_by_window(tabs, win_num) if tab.url == newtab]
+    newtabs = [tab for tab in filter_tabs_by_window(tabs, win_num) if tab.url == newtab]
     #print(win_num, len(newtabs))
     if len(newtabs) > 1:
         for i, tab in enumerate(newtabs):

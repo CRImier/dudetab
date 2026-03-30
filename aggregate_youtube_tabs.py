@@ -15,10 +15,10 @@ import random
 # This way, tabs can be sorted properly, even if there's a large window with both music tabs and non-music tabs.
 # Also, after a window is decided to be a music window, the script moves all the tabs marked by user as non-music tabs out of it.
 
-import common
+from common import *
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 # closing YouTube Home tabs
 
@@ -82,10 +82,10 @@ for window, count in youtube_windows.items():
         print("Large window {} has {} tabs".format(repr(window), count))
         non_music_tabs = []
         for i in range(music_tabs_to_check):
-            tab = random.choice(common.filter_tabs_by_window(tabs, window))
+            tab = random.choice(filter_tabs_by_window(tabs, window))
             # avoid repetitions
             while tab in non_music_tabs:
-                tab = random.choice(common.filter_tabs_by_window(tabs, window))
+                tab = random.choice(filter_tabs_by_window(tabs, window))
             result = ask_if_music_tab(tab)
             if result == "close":
                 tabs_to_close.append(tab)
@@ -114,15 +114,15 @@ largest_window = max(large_windows.items(), key=operator.itemgetter(1))[0]
 
 # first, moving any manually-found non-music tabs from the music window into the largest window
 # wouldn't want to just leave them in the music window
-old_tabs = common.serialize_tabs(tabs)
+old_tabs = serialize_tabs(tabs)
 for tab in non_music_tabs:
     print("Moving non-music tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
     tab.window = largest_window
-new_tabs = common.serialize_tabs(tabs)
-common.update_tabs(cl, old_tabs, new_tabs)
+new_tabs = serialize_tabs(tabs)
+update_tabs(cl, old_tabs, new_tabs)
 
 # regenerate all the variables we'll be using
-tabs = common.parse_tabs(cl)
+tabs = parse_tabs(cl)
 youtube_tabs = [tab for tab in tabs if "youtube.com" in tab.url]
 
 # merge all large non-music windows together with the largest window
@@ -134,16 +134,16 @@ for window in large_windows:
     if window == largest_window:
         continue
     print("Processing {}".format(window))
-    old_tabs = common.serialize_tabs(tabs)
-    window_tabs = common.filter_tabs_by_window(tabs, window)
+    old_tabs = serialize_tabs(tabs)
+    window_tabs = filter_tabs_by_window(tabs, window)
     youtube_tabs = [tab for tab in window_tabs if "youtube.com" in tab.url]
     for tab in youtube_tabs:
         print("Moving tab {} from window {} to window {}".format(tab.get_full_id(), tab.window, largest_window))
         tab.window = largest_window
-    new_tabs = common.serialize_tabs(tabs)
+    new_tabs = serialize_tabs(tabs)
     # this code recalculates the tab indices and also calls the move command
-    common.update_tabs(cl, old_tabs, new_tabs)
-    tabs = common.parse_tabs(cl)
+    update_tabs(cl, old_tabs, new_tabs)
+    tabs = parse_tabs(cl)
 
 other_windows = [window for window in youtube_windows.keys() if window not in large_windows and window != music_window]
 
@@ -155,9 +155,9 @@ else:
 
 # now, prompting the user to sort through small windows one-by-one
 
-old_tabs = common.serialize_tabs(tabs)
+old_tabs = serialize_tabs(tabs)
 for window in other_windows:
-    window_tabs = common.filter_tabs_by_window(tabs, window)
+    window_tabs = filter_tabs_by_window(tabs, window)
     for tab in window_tabs:
         if tab not in youtube_tabs:
             continue
@@ -179,7 +179,7 @@ for tab in tabs_to_close:
     print("Closing tab {}".format(tab.get_full_id()))
     cl.close_tabs([tab.get_full_id()])
 
-new_tabs = common.serialize_tabs(tabs)
-common.update_tabs(cl, old_tabs, new_tabs)
+new_tabs = serialize_tabs(tabs)
+update_tabs(cl, old_tabs, new_tabs)
 
 print("Sorting finished!")

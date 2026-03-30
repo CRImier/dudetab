@@ -1,7 +1,7 @@
-import common
+from common import *
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
+cl = get_client()
+tabs = parse_tabs(cl)
 
 # closing all YouTube homepage tabs - tabs with "https://youtube.com/" URL
 

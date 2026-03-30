@@ -1,7 +1,7 @@
-import common
+from common import *
 
-cl = common.get_client()
-tabs = common.parse_tabs(cl)
-windows = common.get_window_ids(tabs)
+cl = get_client()
+tabs = parse_tabs(cl)
+windows = get_window_ids(tabs)
 
 print(len(tabs))
