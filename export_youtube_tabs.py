@@ -25,26 +25,6 @@ def get_url(url):
         url = url.replace("/live/", "watch?v=")
     return url
 
-def ask_tab_action(tab):
-    message = "Save tab?"
-    prompt = "[s]ave? [l]eave? [c]lose? [q]uit? >>> "
-    print(message)
-    result = None
-    valid_options = "slcq"
-    valid_options += valid_options.upper()
-    while not result or (result not in valid_options or len(result) > 1):
-        result = input(prompt)
-    if result.lower() == 's':
-        return "save"
-    elif result.lower() == 'l':
-        return "leave"
-    elif result.lower() == 'c':
-        return "close"
-    elif result.lower() == 'q':
-        return "quit"
-    else:
-        raise FunniException
-
 # closing YouTube Home tabs
 
 youtube_home_tabs = [tab for tab in tabs if tab.url.endswith("youtube.com/")]
@@ -101,7 +81,7 @@ for i, tab in enumerate(youtube_tabs):
         url = get_url(tab.url)
         s = "{} - '{}' ({}:{}), from {}".format(tab.url, name, duration_m, duration_s, tab.sinfo.get("uploader", "[UNKNOWN]"))
         print(n, s)
-        result = ask_tab_action(tab)
+        result = ask_tab_action("Save tab?", answers = ["[s]ave", "[l]eave", "[c]lose", "[q]uit"])
         if result == "close":
             tabs_to_close.append(tab)
         elif result == "leave":

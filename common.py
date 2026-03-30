@@ -85,6 +85,40 @@ def is_empty_tab(tab):
 def filter_tabs_by_window(tabs, window):
     return [tab for tab in tabs if tab.window == window]
 
+FunniException = type("FunniException", (Exception,), {})
+
+def ask_tab_action(message, answers = ["[l]eave", "[c]lose", "[q]uit"]):
+    def get_letter(a):
+        return a.split("]", 1)[0].split("[")[-1]
+    def strip_answer(a):
+        return ''.join([letter for letter in a if letter not in "[]"])
+
+    answer_dict = {get_letter(a):strip_answer(a) for a in answers}
+    #message = "Save tab?"
+    #prompt = "[s]ave? [l]eave? [c]lose? [q]uit? >>> "
+    prompt = "? ".join(answers) + "? >>> "
+    print(message)
+    result = None
+    valid_options = "".join(answer_dict.keys())
+    valid_options += valid_options.upper()
+    while not result or (result not in valid_options or len(result) > 1):
+        result = input(prompt)
+    return answer_dict[result.lower()]
+    """
+    if result.lower() == 's':
+        return "save"
+    elif result.lower() == 'l':
+        return "leave"
+    elif result.lower() == 'c':
+        return "close"
+    elif result.lower() == 'q':
+        return "quit"
+    else:
+        raise FunniException
+    """
+
+
+
 if __name__ == "__main__":
     client = get_client()
     tabs = parse_tabs(client)
