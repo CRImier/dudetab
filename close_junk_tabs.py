@@ -8,9 +8,13 @@ tabs = parse_tabs(cl)
 def small_window_interactive_cleanup(used_windows):
     #main_window = used_windows[0]
     tabs = parse_tabs(cl)
-    for tab in tabs:
+    for tab in list(reversed(tabs)):
         if tab.window not in used_windows:
             print(f"{tab.name} ( {tab.url} )")
+            if is_empty_tab(tab):
+                print("Closing {} in window {}".format(tab.url, tab.window))
+                cl.close_tabs([tab.get_full_id()])
+                continue
             action = ask_tab_action("What do?", answers=["[s]kip", "[l]eave", "[c]lose", "[q]uit"])
             if action == "skip":
                 break
@@ -22,42 +26,26 @@ def small_window_interactive_cleanup(used_windows):
             elif action == "quit":
                 sys.exit(0)
 
-# closing all LCSC datasheet tabs
+# closing all "close on sight" tabs
 
-current_tabs = [tab for tab in tabs if ("lcsc.com/datasheet/") in tab.url]
-if not current_tabs:
-    print("No LCSC datasheets open")
-
-for tab in current_tabs:
-    print("Closing LCSC datasheet tab in window {}".format(tab.window))
-    cl.close_tabs([tab.get_full_id()])
-
-
-common_domains = vars.close_junk_common_domains
-
-current_tabs = [tab for tab in tabs if any([tab.url.endswith(url) for url in common_domains])]
-if not current_tabs:
-    print("No common homepages found")
-
-for tab in current_tabs:
-    print("Closing {} in window {}".format(tab.url, tab.window))
-    cl.close_tabs([tab.get_full_id()])
-
-ask_before_domains = vars.close_junk_ask_before_domains
-
-
-current_tabs = [tab for tab in tabs if any([tab.url.startswith(domain) for domain in ask_before_domains])]
-if not current_tabs:
-    print("No ask-before-closing windows found")
-
-for tab in current_tabs:
-    print(f"{tab.name} ( {tab.url} )")
-    action = ask_tab_action("What do?", answers=["[l]eave", "[c]lose", "[q]uit"])
-    if action == "leave":
-        continue
-    elif action == "close":
-        print("Closing {} in window {}".format(tab.url, tab.window))
+for tab in tabs:
+    if any([fn(tab) for fn in vars.junk_just_close]):
+        print("closing tab", tab.url)
         cl.close_tabs([tab.get_full_id()])
-    elif action == "quit":
-        sys.exit(0)
-    #s = "{} - '{}' ({}:{}), from {}".format(tab.url, name, duration_m, duration_s, tab.sinfo.get("uploader", "[UNKNOWN]"))
+
+tabs = parse_tabs(cl)
+
+for tab in list(reversed(tabs)):
+    if any([fn(tab) for fn in vars.junk_ask_for_action]):
+        print(f"{tab.name} ( {tab.url} )")
+        action = ask_tab_action("What do?", answers=["[s]kip", "[l]eave", "[c]lose", "[q]uit"])
+        if action == "leave":
+            continue
+        elif action == "skip":
+            break
+        elif action == "close":
+            print("Closing {} in window {}".format(tab.url, tab.window))
+            cl.close_tabs([tab.get_full_id()])
+        elif action == "quit":
+            sys.exit(0)
+

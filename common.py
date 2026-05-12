@@ -104,18 +104,6 @@ def ask_tab_action(message, answers = ["[l]eave", "[c]lose", "[q]uit"]):
     while not result or (result not in valid_options or len(result) > 1):
         result = input(prompt)
     return answer_dict[result.lower()]
-    """
-    if result.lower() == 's':
-        return "save"
-    elif result.lower() == 'l':
-        return "leave"
-    elif result.lower() == 'c':
-        return "close"
-    elif result.lower() == 'q':
-        return "quit"
-    else:
-        raise FunniException
-    """
 
 
 
