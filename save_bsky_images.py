@@ -19,7 +19,7 @@ for tab in bsky_tabs:
     print(last_part)
     if not '@' in last_part:
         print("Can't find @ in ", tab.url)
-        continue
+        last_part += "@webp" # hack hehe
     fn, ext = last_part.rsplit('@', 1)
     filename = fn+'.'+ext
     print(filename)
