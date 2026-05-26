@@ -42,7 +42,7 @@ for tab in bsky_tabs:
         cl.close_tabs([tab.get_full_id()])
 
 for tab in bsky_tabs:
-    if tab.url == "https://bsky.app/notifications" \
+    if tab.url.startswith("https://bsky.app/notifications") \
       and tab != first_tab:
         print("Closing notif tab:", tab.get_full_id())
         cl.close_tabs([tab.get_full_id()])
